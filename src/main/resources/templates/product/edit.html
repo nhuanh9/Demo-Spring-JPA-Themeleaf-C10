@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa sản phẩm</title>
+</head>
+<body>
+<h1>Sửa sản phẩm</h1>
+<form action="/edit-product" method="post">
+    <!-- Trường ẩn chứa index của sản phẩm để gửi về controller -->
+    <input type="hidden" name="index" th:value="${index}">
+    
+    Tên: <input type="text" name="name" th:value="${product.name}">
+    Giá: <input type="text" name="price" th:value="${product.price}">
+    
+    <button>Lưu</button>
+</form>
+<br>
+<a href="/products">Quay lại danh sách</a>
+</body>
+</html>

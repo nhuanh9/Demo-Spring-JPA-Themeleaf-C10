@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/cars">Xem danh sách</a>
+<form action="/cars/update" method="post">
+    <input type="hidden" name="id" th:value="${car.id}">
+    <input type="text" name="name" th:value="${car.name}">
+    <input type="text" name="price" th:value="${car.price}">
+    <button>Sửa</button>
+</form>
+</body>
+</html>
+

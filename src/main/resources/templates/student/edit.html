@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/students">Xem danh sách</a>
+<form action="/students/edit" method="post">
+    <input type="hidden" name="id" th:value="${editStudent.id}">
+    <input type="text" name="name" th:value="${editStudent.name}">
+    <input type="text" name="score" th:value="${editStudent.score}">
+    <button>Sửa</button>
+</form>
+</body>
+</html>
+
+<!--
+    Tính năng xóa
+-->

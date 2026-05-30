@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/students/add">Thêm mới</a>
+<form action="/students/search">
+    <input type="text" name="key">
+    <button>Search</button>
+</form>
+<a href="/students/sort">Điểm tăng dần</a>
+<a href="/students/sort2">Điểm giảm dần</a>
+<a href="/students/top3">Top</a>
+<div th:each="stu: ${arr}">
+    <h1>
+        <span th:text="${stu.name}"></span>
+        :
+        <span th:text=" ${stu.score}"></span>
+        <a th:href="@{/students/edit(id=${stu.id})}">Edit</a>
+        <a th:href="@{/students/delete(id=${stu.id})}">Delete</a>
+    </h1>
+</div>
+</body>
+</html>
+
+<!--
+    Điểm giảm dần
+    Top 3, Top 5 điểm cao nhất
+-->

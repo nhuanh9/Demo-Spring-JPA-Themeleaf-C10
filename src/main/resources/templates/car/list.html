@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/cars/add">Thêm mới</a>
+<form action="/cars/search">
+    <input type="text" name="name">
+    <button>Search</button>
+</form>
+<form action="/cars/sort">
+    <input type="hidden" name="type" value="asc">
+    <button>Giá tăng dần</button>
+</form>
+<form action="/cars/sort">
+    <input type="hidden" name="type" value="desc">
+    <button>Giá giảm dần</button>
+</form>
+<div th:each="stu: ${arr}">
+    <h1>
+        <span th:text="${stu.name}"></span>
+        :
+        <span th:text=" ${stu.price}"></span>
+        <a th:href="@{/cars/edit/{id}(id=${stu.id})}">Edit</a>
+        <a th:href="@{/cars/delete/{id}(id=${stu.id})}">Delete</a>
+    </h1>
+</div>
+</body>
+</html>
