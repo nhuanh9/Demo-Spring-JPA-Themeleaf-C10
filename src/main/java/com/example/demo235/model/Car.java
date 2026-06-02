@@ -1,9 +1,6 @@
 package com.example.demo235.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Car {
@@ -13,18 +10,29 @@ public class Car {
     private String name;
     private Double price;
 
+    @ManyToOne
+    @JoinColumn(name = "carType_id")
+    private CarType carType;
+
     public Car() {
     }
 
-    public Car(Long id, String name, Double price) {
-        this.id = id;
+    public Car(String name, Double price, CarType carType) {
+        this.name = name;
+        this.price = price;
+        this.carType = carType;
+    }
+    public Car(String name, Double price) {
         this.name = name;
         this.price = price;
     }
 
-    public Car(String name, Double price) {
-        this.name = name;
-        this.price = price;
+    public CarType getCarType() {
+        return carType;
+    }
+
+    public void setCarType(CarType carType) {
+        this.carType = carType;
     }
 
     public Long getId() {

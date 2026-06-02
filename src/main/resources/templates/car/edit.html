@@ -10,6 +10,14 @@
     <input type="hidden" name="id" th:value="${car.id}">
     <input type="text" name="name" th:value="${car.name}">
     <input type="text" name="price" th:value="${car.price}">
+    <select name="carTypeId" id="">
+        <option
+                th:each="c:${carTypes}"
+                th:value="${c.id}"
+                th:text="${c.name}"
+                th:selected="${car.carType.id == c.id}"
+        ></option>
+    </select>
     <button>Sửa</button>
 </form>
 </body>

@@ -11,4 +11,5 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findAllByNameContaining(String name);
     List<Car> findAllByOrderByPriceAsc();
     List<Car> findAllByOrderByPriceDesc();
+    List<Car> findAllByCarTypeId(Long carTypeId);
 }

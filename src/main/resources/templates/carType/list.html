@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/car-types/add">Thêm mới</a>
+<div th:each="stu: ${arr}">
+    <h1>
+        <span th:text="${stu.name}"></span>
+        <a th:href="@{/car-types/edit/{id}(id=${stu.id})}">Edit</a>
+        <a th:href="@{/car-types/delete/{id}(id=${stu.id})}">Delete</a>
+    </h1>
+</div>
+</body>
+</html>

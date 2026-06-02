@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -9,7 +9,14 @@
 <form action="/cars/save" method="post">
     <input type="text" name="name">
     <input type="text" name="price">
+    <select name="carTypeId" id="">
+        <option th:each="c:${carTypes}" th:value="${c.id}" th:text="${c.name}"></option>
+    </select>
     <button>Thêm</button>
 </form>
 </body>
 </html>
+
+<!--
+    Lọc theo loại
+-->
