@@ -12,19 +12,15 @@ import java.util.List;
 
 @Controller
 public class HelloController {
-    private List<Product> listProduct = new ArrayList<>();
 
     public HelloController() {
-        listProduct.add(new Product(100, "IP"));
-        listProduct.add(new Product(111, "IP1"));
-        listProduct.add(new Product(222, "IP2"));
-        listProduct.add(new Product(333, "IP3"));
     }
 
     @GetMapping("/hello")
     public ModelAndView hello() {
         return new ModelAndView("/hello");
     }
+
     @GetMapping("/ex1")
     public ModelAndView ex1() {
         ModelAndView modelAndView = new ModelAndView("/ex1");
@@ -35,7 +31,7 @@ public class HelloController {
     @GetMapping("/ex2")
     public ModelAndView ex2() {
         ModelAndView modelAndView = new ModelAndView("/ex2");
-        Product product = new Product(200, "IP");
+        Product product = new Product("IP", 200.0, null);
         modelAndView.addObject("p", product);
         return modelAndView;
     }
@@ -56,10 +52,10 @@ public class HelloController {
     public ModelAndView ex4() {
         ModelAndView modelAndView = new ModelAndView("/ex4");
         List<Product> list = new ArrayList<>();
-        list.add(new Product(100, "IP"));
-        list.add(new Product(111, "IP1"));
-        list.add(new Product(222, "IP2"));
-        list.add(new Product(333, "IP3"));
+        list.add(new Product("IP", 100.0, null));
+        list.add(new Product("IP1", 111.0, null));
+        list.add(new Product("IP2", 222.0, null));
+        list.add(new Product("IP3", 333.0, null));
         modelAndView.addObject("arr", list);
         return modelAndView;
     }
@@ -67,7 +63,7 @@ public class HelloController {
     @GetMapping("/ex5")
     public ModelAndView ex5(@RequestParam int a, @RequestParam int b) {
         ModelAndView modelAndView = new ModelAndView("/ex5");
-        modelAndView.addObject("sum", a+b);
+        modelAndView.addObject("sum", a + b);
         return modelAndView;
     }
 
@@ -79,47 +75,15 @@ public class HelloController {
     @GetMapping("/cal")
     public ModelAndView cal(@RequestParam int a, @RequestParam int b) {
         ModelAndView modelAndView = new ModelAndView("/rsCal");
-        modelAndView.addObject("tong", a+b);
-        modelAndView.addObject("tich", a*b);
-            modelAndView.addObject("hieu", a-b);
+        modelAndView.addObject("tong", a + b);
+        modelAndView.addObject("tich", a * b);
+        modelAndView.addObject("hieu", a - b);
         return modelAndView;
     }
 
     @GetMapping("/login")
     public ModelAndView login() {
         return new ModelAndView("/formLogin");
-    }
-
-    @GetMapping("/products")
-    public ModelAndView listProducts() {
-        ModelAndView modelAndView = new ModelAndView("/product/list");
-        modelAndView.addObject("products", listProduct);
-        return modelAndView;
-    }
-
-    @GetMapping("/add-product")
-    public ModelAndView addProductForm() {
-        return new ModelAndView("/product/add");
-    }
-
-    @PostMapping("/add-product")
-    public ModelAndView addProduct(Product product) {
-        listProduct.add(product);
-        return new ModelAndView("redirect:/products");
-    }
-
-    @GetMapping("/edit-product")
-    public ModelAndView editProductForm(@RequestParam int index) {
-        ModelAndView modelAndView = new ModelAndView("/product/edit");
-        modelAndView.addObject("product", listProduct.get(index));
-        modelAndView.addObject("index", index);
-        return modelAndView;
-    }
-
-    @PostMapping("/edit-product")
-    public ModelAndView editProduct(@RequestParam int index, Product product) {
-        listProduct.set(index, product);
-        return new ModelAndView("redirect:/products");
     }
 
     @PostMapping("/login")

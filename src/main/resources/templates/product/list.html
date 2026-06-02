@@ -6,22 +6,39 @@
 </head>
 <body>
 <h1>Danh sách sản phẩm</h1>
-<a href="/add-product">Thêm sản phẩm mới</a>
+<a href="/products/add">Thêm sản phẩm mới</a> | 
+<a href="/categories">Quản lý danh mục</a>
 <br><br>
+<form action="/products" method="get">
+    Lọc theo danh mục:
+    <select name="categoryId" onchange="this.form.submit()">
+        <option value="">-- Tất cả danh mục --</option>
+        <option th:each="c : ${categories}" 
+                th:value="${c.id}" 
+                th:text="${c.name}"
+                th:selected="${selectedCategoryId == c.id}"></option>
+    </select>
+</form>
+<br>
 <table border="1">
     <thead>
         <tr>
-            <th>Tên</th>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
             <th>Giá</th>
+            <th>Danh mục</th>
             <th>Hành động</th>
         </tr>
     </thead>
     <tbody>
-        <tr th:each="p, status : ${products}">
+        <tr th:each="p : ${products}">
+            <td th:text="${p.id}"></td>
             <td th:text="${p.name}"></td>
             <td th:text="${p.price}"></td>
+            <td th:text="${p.category != null ? p.category.name : 'Không xác định'}"></td>
             <td>
-                <a th:href="@{/edit-product(index=${status.index})}">Sửa</a>
+                <a th:href="@{/products/edit/{id}(id=${p.id})}">Sửa</a> | 
+                <a th:href="@{/products/delete/{id}(id=${p.id})}" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
             </td>
         </tr>
     </tbody>

@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Thêm sản phẩm</title>
 </head>
 <body>
 <h1>Thêm sản phẩm</h1>
-<form action="/add-product" method="post">
-    Tên: <input type="text" name="name" placeholder="Tên sản phẩm">
-    Giá: <input type="text" name="price" placeholder="Giá">
-    <button>Add</button>
+<form action="/products/save" method="post">
+    Tên: <input type="text" name="name" required placeholder="Tên sản phẩm">
+    Giá: <input type="number" name="price" step="0.01" required placeholder="Giá">
+    Danh mục: 
+    <select name="categoryId" required>
+        <option value="" disabled selected>Chọn danh mục</option>
+        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+    </select>
+    <button type="submit">Thêm</button>
 </form>
 <br>
 <a href="/products">Quay lại danh sách</a>

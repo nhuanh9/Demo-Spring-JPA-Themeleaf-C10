@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -6,14 +6,21 @@
 </head>
 <body>
 <h1>Sửa sản phẩm</h1>
-<form action="/edit-product" method="post">
-    <!-- Trường ẩn chứa index của sản phẩm để gửi về controller -->
-    <input type="hidden" name="index" th:value="${index}">
+<form action="/products/update" method="post">
+    <input type="hidden" name="id" th:value="${product.id}">
     
-    Tên: <input type="text" name="name" th:value="${product.name}">
-    Giá: <input type="text" name="price" th:value="${product.price}">
+    Tên: <input type="text" name="name" th:value="${product.name}" required>
+    Giá: <input type="number" name="price" step="0.01" th:value="${product.price}" required>
     
-    <button>Lưu</button>
+    Danh mục: 
+    <select name="categoryId" required>
+        <option th:each="c : ${categories}" 
+                th:value="${c.id}" 
+                th:text="${c.name}"
+                th:selected="${product.category != null and product.category.id == c.id}"></option>
+    </select>
+    
+    <button type="submit">Lưu</button>
 </form>
 <br>
 <a href="/products">Quay lại danh sách</a>
