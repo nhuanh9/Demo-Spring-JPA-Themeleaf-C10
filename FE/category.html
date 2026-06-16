@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category FE</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Category FE</h1>
+    <a href="product.html">Go to Product</a>
+    <hr>
+    
+    <div>
+        <input type="text" id="search" placeholder="Search...">
+        <button onclick="loadCategories()">Search</button>
+    </div>
+    
+    <hr>
+    
+    <div>
+        <input type="hidden" id="categoryId">
+        <input type="text" id="categoryName" placeholder="Name">
+        <button id="btnSave" onclick="saveCategory()">Save</button>
+        <button id="btnCancel" onclick="cancelEdit()" style="display:none;">Cancel</button>
+    </div>
+    
+    <hr>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="categoryList"></tbody>
+    </table>
+
+    <script src="category.js"></script>
+</body>
+</html>

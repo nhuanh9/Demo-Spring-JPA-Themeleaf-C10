@@ -28,7 +28,6 @@ public class CarRestController {
         return new ResponseEntity<>(cars, HttpStatus.OK);
     }
 
-
     @PostMapping
     public ResponseEntity saveNew(@RequestBody Car car) {
         carRepository.save(car);

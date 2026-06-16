@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product CRUD</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Product CRUD</h1>
+    <a href="/category-crud.html">Go to Category CRUD</a>
+    <hr>
+    
+    <!-- Search & Sort & Filter -->
+    <div>
+        <input type="text" id="search" placeholder="Search by name...">
+        <select id="filterCategory">
+            <option value="">All Categories</option>
+            <!-- Categories loaded dynamically -->
+        </select>
+        <select id="sortBy">
+            <option value="id">Sort by ID</option>
+            <option value="name">Sort by Name</option>
+            <option value="price">Sort by Price</option>
+        </select>
+        <select id="sortDirection">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button onclick="loadProducts()">Apply</button>
+    </div>
+    
+    <hr>
+    
+    <!-- Form -->
+    <div>
+        <input type="hidden" id="productId">
+        <input type="text" id="productName" placeholder="Product name">
+        <input type="number" id="productPrice" placeholder="Product price" step="0.01">
+        <select id="productCategory">
+            <option value="">No Category</option>
+            <!-- Categories loaded dynamically -->
+        </select>
+        <button id="btnSave" onclick="saveProduct()">Save</button>
+        <button id="btnCancel" onclick="cancelEdit()" style="display:none;">Cancel</button>
+    </div>
+    
+    <hr>
+    
+    <!-- List -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody">
+            <!-- Data loaded dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        const API_PRODUCTS = '/api/products';
+        const API_CATEGORIES = '/api/categories';
+        
+        let allCategories = [];
+
+        async function loadCategories() {
+            try {
+                const response = await axios.get(API_CATEGORIES);
+                allCategories = response.data;
+                
+                const formSelect = document.getElementById('productCategory');
+                const filterSelect = document.getElementById('filterCategory');
+                
+                formSelect.innerHTML = '<option value="">No Category</option>';
+                filterSelect.innerHTML = '<option value="">All Categories</option>';
+                
+                allCategories.forEach(c => {
+                    formSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                    filterSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        
+        async function loadProducts() {
+            const search = document.getElementById('search').value;
+            const categoryId = document.getElementById('filterCategory').value;
+            const sortBy = document.getElementById('sortBy').value;
+            const sortDirection = document.getElementById('sortDirection').value;
+            
+            try {
+                const response = await axios.get(API_PRODUCTS, {
+                    params: { categoryId, search, sortBy, sortDirection }
+                });
+                const products = response.data;
+                const tbody = document.getElementById('productTableBody');
+                tbody.innerHTML = '';
+                products.forEach(p => {
+                    const categoryName = p.category ? p.category.name : 'N/A';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${p.id}</td>
+                            <td>${p.name}</td>
+                            <td>${p.price}</td>
+                            <td>${categoryName}</td>
+                            <td>
+                                <button onclick="editProduct(${p.id}, '${p.name}', ${p.price}, ${p.category ? p.category.id : ''})">Edit</button>
+                                <button onclick="deleteProduct(${p.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Error loading products');
+            }
+        }
+        
+        async function saveProduct() {
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const categoryId = document.getElementById('productCategory').value;
+            
+            const payload = {
+                name,
+                price: parseFloat(price),
+                category: categoryId ? { id: parseInt(categoryId) } : null
+            };
+            
+            try {
+                if (id) {
+                    await axios.put(`${API_PRODUCTS}/${id}`, payload);
+                } else {
+                    await axios.post(API_PRODUCTS, payload);
+                }
+                cancelEdit();
+                loadProducts();
+            } catch (error) {
+                console.error(error);
+                alert('Error saving product');
+            }
+        }
+        
+        function editProduct(id, name, price, categoryId) {
+            document.getElementById('productId').value = id;
+            document.getElementById('productName').value = name;
+            document.getElementById('productPrice').value = price;
+            document.getElementById('productCategory').value = categoryId || '';
+            document.getElementById('btnSave').innerText = 'Update';
+            document.getElementById('btnCancel').style.display = 'inline-block';
+        }
+        
+        function cancelEdit() {
+            document.getElementById('productId').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('btnSave').innerText = 'Save';
+            document.getElementById('btnCancel').style.display = 'none';
+        }
+        
+        async function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    await axios.delete(`${API_PRODUCTS}/${id}`);
+                    loadProducts();
+                } catch (error) {
+                    console.error(error);
+                    alert('Error deleting product');
+                }
+            }
+        }
+        
+        async function init() {
+            await loadCategories();
+            await loadProducts();
+        }
+        init();
+    </script>
+</body>
+</html>
