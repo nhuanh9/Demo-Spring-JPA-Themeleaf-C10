@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>Danh sách oto</h1>
+<div id="list"></div>
+<hr/>
+<h2>Danh sách loại</h2>
+<div id="list2"></div>
+<hr/>
+<h2>Thêm mới san pham</h2>
+<input type="text" id="name">
+<input type="text" id="price">
+<select id="car-types">
+</select>
+<button onclick="addProduct()">Them</button>
+<hr/>
+<h2>Sua san pham</h2>
+<input type="text" id="idEdit">
+<input type="text" id="nameEdit">
+<input type="text" id="priceEdit">
+<select id="car-types-edit">
+</select>
+<button onclick="saveProduct()">Sua</button>
+<script>
+    let list;
+    const API_CAR = "http://localhost:8080/api/cars";
+    const API_CAR_TYPE = "http://localhost:8080/api/car-types";
+
+    function getList() {
+        axios.get(API_CAR).then(x => {
+            list = x.data;
+            let htmlStr = '';
+            for (let i = 0; i < list.length; i++) {
+                htmlStr += `
+                    <h1>${list[i].name}: ${list[i].price}(Tpye: ${list[i].carType?.name})
+                    <button onclick="deleteProduct(${list[i].id})">Xoa</button>
+                    <button onclick="editProduct(${list[i].id})">Edit</button>
+                    </h1>`
+            }
+            document.getElementById('list').innerHTML = htmlStr;
+        })
+    }
+
+    getList()
+
+    // in ra danh sách car type vào 1 div khác
+    axios.get(API_CAR_TYPE).then(x => {
+        list = x.data;
+        let htmlStr = '';
+        for (let i = 0; i < list.length; i++) {
+            htmlStr += `<option value="${list[i].id}">${list[i].name}</option>`
+        }
+        document.getElementById('car-types').innerHTML = htmlStr;
+        document.getElementById('car-types-edit').innerHTML = htmlStr;
+    })
+
+    function addProduct() {
+        let name = document.getElementById('name').value;
+        let price = document.getElementById('price').value;
+        let carTypeId = document.getElementById('car-types').value;
+        axios.post(API_CAR, {name, price, carType: {id: carTypeId}}).then(() => {
+            alert('Them thanh cong');
+            getList()
+        })
+    }
+
+    function deleteProduct(id) {
+        axios.delete(API_CAR + "/" + id).then(() => {
+            alert('Xoa thanh cong');
+            getList()
+        })
+    }
+
+    function editProduct(id) {
+        axios.get(API_CAR + "/" + id).then((item) => {
+            let data = item.data;
+            document.getElementById('idEdit').value = id;
+            document.getElementById('nameEdit').value = data.name;
+            document.getElementById('priceEdit').value = data.price;
+            document.getElementById('car-types-edit').value = data.carType.id;
+        })
+    }
+
+    function saveProduct() {
+        let id = document.getElementById('idEdit').value;
+        let name = document.getElementById('nameEdit').value;
+        let price = document.getElementById('priceEdit').value;
+        let carTypeId = document.getElementById('car-types-edit').value;
+        axios.put(API_CAR + '/' + id, {id, name, price, carType: {id: carTypeId}}).then(() => {
+            alert('Sua thanh cong');
+            getList()
+        })
+    }
+</script>
+</body>
+</html>
