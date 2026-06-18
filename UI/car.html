@@ -27,12 +27,12 @@
 </select>
 <button onclick="saveProduct()">Sua</button>
 <script>
-    let list;
     const API_CAR = "http://localhost:8080/api/cars";
     const API_CAR_TYPE = "http://localhost:8080/api/car-types";
 
     function getList() {
-        axios.get(API_CAR).then(x => {
+        axios.get(API_CAR)
+            .then(x => {
             list = x.data;
             let htmlStr = '';
             for (let i = 0; i < list.length; i++) {
@@ -46,7 +46,16 @@
         })
     }
 
-    getList()
+    getList(); // B
+
+    async function loadingData() {
+        let x = await axios.get(API_CAR);
+        let y = await axios.get(API_CAR_TYPE);
+        console.log(1, x.data);
+        console.log(2, y.data);
+    }
+
+    loadingData().then();
 
     // in ra danh sách car type vào 1 div khác
     axios.get(API_CAR_TYPE).then(x => {

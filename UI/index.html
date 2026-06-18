@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="root">
+    <h1>Trang chủ</h1>
+    <div>
+        <button onclick="loadListOto()">Danh sách Oto</button>
+        <button onclick="manageOto()">Quản lý oto</button>
+        <button onclick="manageType()">Quản lý loại oto</button>
+    </div>
+    <div id="main">
+
+    </div>
+</div>
+<script>
+    let mainElement = document.getElementById('main');
+    let list; // A
+
+    const API_CAR = "http://localhost:8080/api/cars";
+    const API_CAR_TYPE = "http://localhost:8080/api/car-types";
+
+    function getList() {
+        axios.get(API_CAR)
+            .then(x => {
+                list = x.data;
+                let htmlStr = '';
+                for (let i = 0; i < list.length; i++) {
+                    htmlStr += `
+                    <h1>${list[i].name}: ${list[i].price}(Tpye: ${list[i].carType?.name})
+                    </h1>`
+                }
+                document.getElementById('list').innerHTML = htmlStr;
+            })
+    }
+
+    function getListType() {
+        axios.get(API_CAR_TYPE)
+            .then(x => {
+                list = x.data;
+                let htmlStr = '';
+                for (let i = 0; i < list.length; i++) {
+                    htmlStr += `
+                    <h1>${i + 1}. ${list[i].name}
+                    </h1>`
+                }
+                document.getElementById('list').innerHTML = htmlStr;
+            })
+    }
+
+    function manageType() {
+        mainElement.innerHTML = `
+            <h1>Quản lý loại oto</h1>
+            <div id="list"></div>
+        `
+        getListType()
+    }
+
+    function loadListOto() {
+        mainElement.innerHTML = `
+            <h1>Danh sách oto</h1>
+            <div id="list"></div>
+        `
+        getList(); // B
+    }
+
+    function manageOto() {
+        mainElement.innerHTML = `
+            <h1>Quản lý oto</h1>
+            <button onclick="loadDSOto()">Danh sách</button>
+            <button onclick="loadFormAdd()">Tạo mới</button>
+            <div id="oto"></div>
+        `
+    }
+
+    function loadDSOto() {
+        axios.get(API_CAR)
+            .then(x => {
+                list = x.data;
+                let htmlStr = `
+        <h2>Danh sách</h2>
+        `
+                for (let i = 0; i < list.length; i++) {
+                    htmlStr += `
+                    <h1>${list[i].name}: ${list[i].price}(Tpye: ${list[i].carType?.name})
+                    <button onclick="deleteProduct(${list[i].id})">Xoa</button>
+                    <button onclick="editProduct(${list[i].id})">Edit</button>
+                    </h1>`
+                }
+                document.getElementById('oto').innerHTML = htmlStr;
+            })
+    }
+
+    function loadFormAdd() {
+        axios.get(API_CAR_TYPE).then(x => {
+            list = x.data;
+            let htmlStr = '';
+            for (let i = 0; i < list.length; i++) {
+                htmlStr += `<option value="${list[i].id}">${list[i].name}</option>`
+            }
+            document.getElementById('oto').innerHTML = `
+                <h2>Tạo mới</h2>
+               <input type="text" id="name">
+                <input type="text" id="price">
+                <select id="car-types">
+                ${htmlStr}
+                </select>
+                <button onclick="addProduct()">Them</button>
+            `
+        })
+    }
+
+    function addProduct() {
+        let name = document.getElementById('name').value;
+        let price = document.getElementById('price').value;
+        let carTypeId = document.getElementById('car-types').value;
+        axios.post(API_CAR, {name, price, carType: {id: carTypeId}}).then(() => {
+            alert('Them thanh cong');
+            loadDSOto()
+        })
+    }
+
+    function editProduct(id) {
+        axios.get(API_CAR_TYPE).then(x => {
+            list = x.data;
+            let htmlStrTypeOption = '';
+            for (let i = 0; i < list.length; i++) {
+                htmlStrTypeOption += `<option value="${list[i].id}">${list[i].name}</option>`
+            }
+            axios.get(API_CAR + "/" + id).then((item) => {
+                let data = item.data;
+                let htmlStr = `
+                <h2>Sua san pham</h2>
+                <input type="text" id="idEdit" value="${data.id}">
+                <input type="text" id="nameEdit" value="${data.name}">
+                <input type="text" id="priceEdit" value="${data.price}">
+                <select id="car-types-edit">
+                    ${htmlStrTypeOption}
+                </select>
+                <button onclick="saveProduct()">Sua</button>
+`
+                document.getElementById('oto').innerHTML = htmlStr
+                document.getElementById('car-types-edit').value = data.carType.id;
+            })
+        })
+    }
+
+    function saveProduct() {
+        let id = document.getElementById('idEdit').value;
+        let name = document.getElementById('nameEdit').value;
+        let price = document.getElementById('priceEdit').value;
+        let carTypeId = document.getElementById('car-types-edit').value;
+        axios.put(API_CAR + '/' + id, {id, name, price, carType: {id: carTypeId}}).then(() => {
+            alert('Sua thanh cong');
+            loadDSOto()
+        })
+    }
+</script>
+</body>
+</html>
